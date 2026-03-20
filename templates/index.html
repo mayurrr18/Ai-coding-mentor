@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Coding Practice Mentor - Learn to Code with AI Assistance</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <span>AI Coding Mentor</span>
+            </div>
+            
+            <div class="student-info" id="studentInfo">
+                <div class="avatar">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="info">
+                    <h3 id="studentName">Loading...</h3>
+                    <p id="studentLevel">Beginner</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-tab="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="challenge">
+                    <i class="fas fa-code"></i>
+                    <span>Practice</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="learning-path">
+                    <i class="fas fa-road"></i>
+                    <span>Learning Path</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="mistakes">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Mistakes History</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="stats">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Statistics</span>
+                </a>
+            </nav>
+            
+            <button class="new-challenge-btn" id="newChallengeBtn">
+                <i class="fas fa-plus"></i>
+                New Challenge
+            </button>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <div class="tab-content active" id="dashboard-tab">
+                <div class="welcome-section">
+                    <h1>Welcome back, <span id="welcomeName">Coder</span>! 👋</h1>
+                    <p>Ready to improve your coding skills? Let's continue your learning journey.</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-trophy"></i>
+                        <div class="stat-info">
+                            <h3 id="challengesCompleted">0</h3>
+                            <p>Challenges Completed</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="stat-info">
+                            <h3 id="masteryLevel">0%</h3>
+                            <p>Overall Mastery</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div class="stat-info">
+                            <h3 id="learningSpeed">0s</h3>
+                            <p>Avg. Solution Time</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div class="stat-info">
+                            <h3 id="mistakesCount">0</h3>
+                            <p>Mistakes Made</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recommendations-section">
+                    <h2><i class="fas fa-lightbulb"></i> AI Recommendations</h2>
+                    <div class="recommendations-list" id="recommendationsList">
+                        <div class="loading">Loading recommendations...</div>
+                    </div>
+                </div>
+                
+                <div class="weak-concepts-section">
+                    <h2><i class="fas fa-chart-simple"></i> Focus Areas</h2>
+                    <div class="concepts-list" id="weakConceptsList">
+                        <div class="loading">Analyzing your progress...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Challenge Tab -->
+            <div class="tab-content" id="challenge-tab">
+                <div class="challenge-container">
+                    <div class="challenge-header">
+                        <h2 id="challengeTitle">Loading challenge...</h2>
+                        <div class="challenge-meta">
+                            <span class="difficulty-badge" id="challengeDifficulty">Beginner</span>
+                            <span class="concept-badge" id="challengeConcept">Arrays</span>
+                        </div>
+                    </div>
+                    
+                    <div class="challenge-content">
+                        <div class="challenge-description">
+                            <h3><i class="fas fa-book-open"></i> Description</h3>
+                            <p id="challengeDescription">Loading...</p>
+                            
+                            <div class="personalized-note" id="personalizedNote">
+                                <i class="fas fa-brain"></i>
+                                <span id="personalizedNoteText"></span>
+                            </div>
+                            
+                            <div class="examples-section">
+                                <h3><i class="fas fa-code"></i> Examples</h3>
+                                <div id="examplesList"></div>
+                            </div>
+                            
+                            <div class="hints-section">
+                                <h3><i class="fas fa-lightbulb"></i> Hints</h3>
+                                <ul id="hintsList"></ul>
+                            </div>
+                        </div>
+                        
+                        <div class="code-editor-section">
+                            <div class="editor-header">
+                                <select id="languageSelect" class="language-select">
+                                    <option value="python">Python</option>
+                                    <option value="javascript">JavaScript</option>
+                                    <option value="java">Java</option>
+                                </select>
+                                <button class="run-btn" id="runCodeBtn">
+                                    <i class="fas fa-play"></i> Run Code
+                                </button>
+                            </div>
+                            
+                            <textarea id="codeEditor" class="code-editor" placeholder="Write your code here..."></textarea>
+                            
+                            <div class="output-section">
+                                <h3>Output</h3>
+                                <pre id="outputArea" class="output-area"></pre>
+                            </div>
+                            
+                            <div class="debugging-suggestions" id="debuggingSuggestions">
+                                <h3><i class="fas fa-bug"></i> Debugging Suggestions</h3>
+                                <div id="suggestionsList"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Learning Path Tab -->
+            <div class="tab-content" id="learning-path-tab">
+                <h2><i class="fas fa-road"></i> Your Personalized Learning Path</h2>
+                <div id="learningPathContent"></div>
+            </div>
+            
+            <!-- Mistakes History Tab -->
+            <div class="tab-content" id="mistakes-tab">
+                <h2><i class="fas fa-history"></i> Mistakes History</h2>
+                <div class="mistakes-filter">
+                    <input type="text" id="searchMistakes" placeholder="Search mistakes...">
+                    <select id="filterMistakeType">
+                        <option value="all">All Types</option>
+                        <option value="syntax_error">Syntax Error</option>
+                        <option value="logic_error">Logic Error</option>
+                        <option value="off_by_one">Off By One</option>
+                        <option value="type_error">Type Error</option>
+                    </select>
+                </div>
+                <div id="mistakesList" class="mistakes-list"></div>
+            </div>
+            
+            <!-- Statistics Tab -->
+            <div class="tab-content" id="stats-tab">
+                <h2><i class="fas fa-chart-line"></i> Your Progress Statistics</h2>
+                <div class="stats-container">
+                    <div class="stats-chart">
+                        <canvas id="mistakeTypesChart"></canvas>
+                    </div>
+                    <div class="stats-chart">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+                <div class="detailed-stats" id="detailedStats"></div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "student_001": [
+    {
+      "mistake_id": "abc-123-def",
+      "timestamp": "2024-01-15T10:30:00",
+      "language": "python",
+      "mistake_type": "off_by_one",
+      "code_snippet": "for i in range(1, len(arr)+1):\n    print(arr[i])",
+      "error_message": "IndexError: list index out of range",
+      "corrected_code": "for i in range(len(arr)):\n    print(arr[i])",
+      "concept": "loops",
+      "context": "Iterating through array with off-by-one error",
+      "severity": 3
+    },
+    {
+      "mistake_id": "xyz-456-ghi",
+      "timestamp": "2024-01-15T11:15:00",
+      "language": "python",
+      "mistake_type": "syntax_error",
+      "code_snippet": "def sum_array(arr)\n    return sum(arr)",
+      "error_message": "SyntaxError: invalid syntax",
+      "corrected_code": "def sum_array(arr):\n    return sum(arr)",
+      "concept": "functions",
+      "context": "Missing colon in function definition",
+      "severity": 2
+    }
+  ]
+}
