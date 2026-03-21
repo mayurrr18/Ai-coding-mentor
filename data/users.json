@@ -1,1 +1,46 @@
-{}
+{
+  "testuser": {
+    "username": "testuser",
+    "email": "test@example.com",
+    "password_hash": "7e6e0c3079a08c5cc6036789b57e951f65f82383913ba1a49ae992544f1b4b6e",
+    "name": "Test User",
+    "student_id": "a4db2a78",
+    "created_at": "2026-03-20T21:24:32.635824",
+    "preferred_languages": [
+      "python"
+    ],
+    "skill_level": {
+      "python": "beginner"
+    },
+    "common_mistakes": {},
+    "completed_challenges": [],
+    "mastery_levels": {},
+    "weakest_concepts": [],
+    "strongest_concepts": [],
+    "streak_days": 1,
+    "last_practice": "2026-03-20T21:25:23.262906",
+    "total_points": 0
+  },
+  "mayurr18": {
+    "username": "mayurr18",
+    "email": "gamemayur18@gmail.com",
+    "password_hash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "name": "Mayur",
+    "student_id": "42da6d3b",
+    "created_at": "2026-03-20T21:27:41.743212",
+    "preferred_languages": [
+      "python"
+    ],
+    "skill_level": {
+      "python": "beginner"
+    },
+    "common_mistakes": {},
+    "completed_challenges": [],
+    "mastery_levels": {},
+    "weakest_concepts": [],
+    "strongest_concepts": [],
+    "streak_days": 1,
+    "last_practice": "2026-03-20T21:27:59.056671",
+    "total_points": 0
+  }
+}
