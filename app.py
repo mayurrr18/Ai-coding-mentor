@@ -17,6 +17,10 @@ from enum import Enum
 import requests
 from functools import wraps
 import random
+import subprocess
+import tempfile
+import signal
+from pathlib import Path
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-in-production'
@@ -28,7 +32,7 @@ if not os.path.exists(STORAGE_PATH):
     os.makedirs(STORAGE_PATH)
 
 # Hindsight Cloud API Key
-HINDSIGHT_API_KEY = "hsk_3b8acd2dfc9cae8889d98e02eacbddd1_e19bcbd62f97aaf1"
+HINDSIGHT_API_KEY = "hsk_d5dcffddfbc4ed0f5281f8b1ed4ceb49_962d0ee224cbf8d2"
 
 
 class ProgrammingLanguage:
@@ -379,42 +383,59 @@ class PersonalizedChallengeGenerator:
                 {
                     "id": "array_sum",
                     "title": "Array Sum",
-                    "description": "Given an array of integers, return their sum.",
+                    "description": "Given an array of integers, return their sum. Handle empty arrays and negative numbers.",
                     "difficulty": "beginner",
                     "points": 10,
-                    "test_cases": [([1, 2, 3], 6), ([], 0), ([-1, 1], 0), ([5, 10, 15], 30)],
+                    "test_cases": [
+                        ([1, 2, 3], 6),
+                        ([], 0),
+                        ([-1, 1], 0),
+                        ([5, 10, 15], 30),
+                        ([0, 0, 0], 0),
+                        ([-5, -10, -15], -30),
+                        ([100], 100)
+                    ],
                     "concept": "arrays",
-                    "starter_code": "def sum_array(arr):\n    # Your code here\n    pass\n\n# Test your code\n# print(sum_array([1, 2, 3]))  # Should print 6",
+                    "starter_code": "def sum_array(arr):\n    # Your code here\n    # Consider edge cases: empty array, negative numbers\n    pass\n\n# Test your code\n# print(sum_array([1, 2, 3]))  # Should print 6\n# print(sum_array([]))         # Should print 0",
                     "examples": [
                         {"input": "[1, 2, 3]", "output": "6"},
                         {"input": "[5, 10, 15]", "output": "30"},
-                        {"input": "[-1, 1]", "output": "0"}
+                        {"input": "[-1, 1]", "output": "0"},
+                        {"input": "[]", "output": "0"}
                     ],
                     "hints": [
                         "Use a loop to iterate through the array",
                         "Initialize a variable to store the sum",
-                        "Add each element to the sum variable"
+                        "Don't forget to handle the empty array case",
+                        "Python has a built-in sum() function"
                     ],
                     "solution": "def sum_array(arr):\n    return sum(arr) if arr else 0"
                 },
                 {
                     "id": "two_sum",
                     "title": "Two Sum",
-                    "description": "Find two numbers in an array that add up to a target. Return their indices.",
+                    "description": "Find two numbers in an array that add up to a target. Return their indices. Each element can only be used once.",
                     "difficulty": "intermediate",
                     "points": 25,
-                    "test_cases": [([2, 7, 11, 15], 9, [0, 1]), ([3, 2, 4], 6, [1, 2]), ([3, 3], 6, [0, 1])],
+                    "test_cases": [
+                        ([2, 7, 11, 15], 9, [0, 1]),
+                        ([3, 2, 4], 6, [1, 2]),
+                        ([3, 3], 6, [0, 1]),
+                        ([1, 2, 3, 4, 5], 9, [3, 4]),
+                        ([10, 20, 30], 50, [1, 2])
+                    ],
                     "concept": "arrays",
-                    "starter_code": "def two_sum(nums, target):\n    # Your code here\n    pass\n\n# Test your code\n# print(two_sum([2, 7, 11, 15], 9))  # Should print [0, 1]",
+                    "starter_code": "def two_sum(nums, target):\n    \"\"\"\n    Find indices of two numbers that sum to target.\n    Return indices as [i, j] where i < j.\n    \"\"\"\n    # Your code here\n    pass\n\n# Test examples:\n# print(two_sum([2, 7, 11, 15], 9))   # [0, 1]\n# print(two_sum([3, 2, 4], 6))        # [1, 2]",
                     "examples": [
                         {"input": "nums = [2, 7, 11, 15], target = 9", "output": "[0, 1]"},
                         {"input": "nums = [3, 2, 4], target = 6", "output": "[1, 2]"},
                         {"input": "nums = [3, 3], target = 6", "output": "[0, 1]"}
                     ],
                     "hints": [
-                        "Use a hash map to store numbers you've seen",
-                        "For each number, check if target - num exists in the map",
-                        "Return indices when you find a match"
+                        "Use a hash map to store numbers you've already seen",
+                        "For each number, check if (target - number) exists in the map",
+                        "The hash map stores both the value and its index",
+                        "Time complexity should be O(n), not O(n²)"
                     ],
                     "solution": "def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []"
                 },
@@ -477,6 +498,66 @@ class PersonalizedChallengeGenerator:
                         "Reset current sum if it becomes negative"
                     ],
                     "solution": "def max_subarray(nums):\n    max_sum = current_sum = nums[0]\n    for num in nums[1:]:\n        current_sum = max(num, current_sum + num)\n        max_sum = max(max_sum, current_sum)\n    return max_sum"
+                },
+                {
+                    "id": "count_even",
+                    "title": "Count Even Numbers",
+                    "description": "Count how many even numbers are in the array.",
+                    "difficulty": "beginner",
+                    "points": 10,
+                    "test_cases": [([1,2,3,4,5,6], 3), ([1,3,5], 0), ([2,4,6,8], 4)],
+                    "concept": "arrays",
+                    "starter_code": "def count_even(arr):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "[1,2,3,4,5,6]", "output": "3"},
+                        {"input": "[1,3,5,7]", "output": "0"}
+                    ],
+                    "hints": [
+                        "A number is even if num % 2 == 0",
+                        "Use a counter variable",
+                        "Loop through all elements"
+                    ],
+                    "solution": "def count_even(arr):\n    return sum(1 for num in arr if num % 2 == 0)"
+                },
+                {
+                    "id": "remove_duplicates",
+                    "title": "Remove Duplicates",
+                    "description": "Remove duplicate elements from a sorted array.",
+                    "difficulty": "beginner",
+                    "points": 15,
+                    "test_cases": [([1,1,2], [1,2]), ([0,0,1,1,1,2,2,3,3,4], [0,1,2,3,4])],
+                    "concept": "arrays",
+                    "starter_code": "def remove_duplicates(nums):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "[1,1,2]", "output": "[1,2]"},
+                        {"input": "[0,0,1,1,1,2]", "output": "[0,1,2]"}
+                    ],
+                    "hints": [
+                        "Use a set to track unique values",
+                        "Or use two pointers for in-place removal",
+                        "Return count or list depending on requirement"
+                    ],
+                    "solution": "def remove_duplicates(nums):\n    return list(set(nums))"
+                },
+                {
+                    "id": "search_insert",
+                    "title": "Search Insert Position",
+                    "description": "Given a sorted array, find the index of a target value, or return the index where it would be if it were inserted.",
+                    "difficulty": "intermediate",
+                    "points": 20,
+                    "test_cases": [([1,3,5,6], 5, 2), ([1,3,5,6], 7, 4), ([1,3,5,6], 0, 0)],
+                    "concept": "arrays",
+                    "starter_code": "def search_insert(nums, target):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "nums = [1,3,5,6], target = 5", "output": "2"},
+                        {"input": "nums = [1,3,5,6], target = 7", "output": "4"}
+                    ],
+                    "hints": [
+                        "Use binary search for O(log n) solution",
+                        "Track left and right pointers",
+                        "When target not found, left pointer gives insert position"
+                    ],
+                    "solution": "def search_insert(nums, target):\n    left, right = 0, len(nums)\n    while left < right:\n        mid = (left + right) // 2\n        if nums[mid] < target:\n            left = mid + 1\n        else:\n            right = mid\n    return left"
                 }
             ],
             "strings": [
@@ -520,26 +601,134 @@ class PersonalizedChallengeGenerator:
                         "Check if stack is empty at the end"
                     ],
                     "solution": "def is_valid(s):\n    stack = []\n    mapping = {')': '(', '}': '{', ']': '['}\n    for char in s:\n        if char in mapping:\n            top = stack.pop() if stack else '#'\n            if mapping[char] != top:\n                return False\n        else:\n            stack.append(char)\n    return not stack"
+                },
+                {
+                    "id": "count_vowels",
+                    "title": "Count Vowels",
+                    "description": "Count the number of vowels in a given string.",
+                    "difficulty": "beginner",
+                    "points": 10,
+                    "test_cases": [("hello", 2), ("aeiou", 5), ("xyz", 0), ("Programming", 3)],
+                    "concept": "strings",
+                    "starter_code": "def count_vowels(s):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "'hello'", "output": "2"},
+                        {"input": "'aeiou'", "output": "5"},
+                        {"input": "'Programming'", "output": "3"}
+                    ],
+                    "hints": [
+                        "Define what counts as a vowel: a, e, i, o, u",
+                        "Iterate through each character",
+                        "Count matching vowels"
+                    ],
+                    "solution": "def count_vowels(s):\n    vowels = 'aeiouAEIOU'\n    return sum(1 for c in s if c in vowels)"
+                },
+                {
+                    "id": "is_palindrome",
+                    "title": "Check Palindrome",
+                    "description": "Check if a string is a palindrome (reads same forwards and backwards).",
+                    "difficulty": "beginner",
+                    "points": 10,
+                    "test_cases": [("racecar", True), ("hello", False), ("A", True), ("Madam", True)],
+                    "concept": "strings",
+                    "starter_code": "def is_palindrome(s):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "'racecar'", "output": "True"},
+                        {"input": "'hello'", "output": "False"},
+                        {"input": "'Madam'", "output": "True"}
+                    ],
+                    "hints": [
+                        "Convert to lowercase for case-insensitive comparison",
+                        "Compare string with its reverse",
+                        "Python slicing with [::-1] reverses strings"
+                    ],
+                    "solution": "def is_palindrome(s):\n    s = s.lower().replace(' ', '')\n    return s == s[::-1]"
+                },
+                {
+                    "id": "longest_common_prefix",
+                    "title": "Longest Common Prefix",
+                    "description": "Find the longest common prefix string amongst a list of strings.",
+                    "difficulty": "intermediate",
+                    "points": 20,
+                    "test_cases": [(["flower","flow","flight"], "fl"), (["dog","racecar","car"], ""), (["a"], "a")],
+                    "concept": "strings",
+                    "starter_code": "def longest_common_prefix(strs):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "['flower','flow','flight']", "output": "'fl'"},
+                        {"input": "['dog','racecar','car']", "output": "''"}
+                    ],
+                    "hints": [
+                        "Compare characters at same position across all strings",
+                        "Stop when characters don't match",
+                        "Handle edge cases (empty list, single string)"
+                    ],
+                    "solution": "def longest_common_prefix(strs):\n    if not strs:\n        return ''\n    for i in range(len(strs[0])):\n        char = strs[0][i]\n        for j in range(1, len(strs)):\n            if i >= len(strs[j]) or strs[j][i] != char:\n                return strs[0][:i]\n    return strs[0]"
+                },
+                {
+                    "id": "string_rotation",
+                    "title": "String Rotation Check",
+                    "description": "Check if string s2 is a rotation of string s1.",
+                    "difficulty": "intermediate",
+                    "points": 20,
+                    "test_cases": [("waterbottle", "erbottlewat", True), ("abc", "bca", True), ("abc", "acb", False)],
+                    "concept": "strings",
+                    "starter_code": "def is_rotation(s1, s2):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "s1 = 'waterbottle', s2 = 'erbottlewat'", "output": "True"},
+                        {"input": "s1 = 'abc', s2 = 'acb'", "output": "False"}
+                    ],
+                    "hints": [
+                        "All rotations of s1 are substrings of s1+s1",
+                        "Check if s2 is in s1+s1",
+                        "Also verify lengths match"
+                    ],
+                    "solution": "def is_rotation(s1, s2):\n    return len(s1) == len(s2) and s2 in s1 + s1"
+                },
+                {
+                    "id": "anagram_check",
+                    "title": "Anagram Check",
+                    "description": "Check if two strings are anagrams (contain same characters in different order).",
+                    "difficulty": "beginner",
+                    "points": 15,
+                    "test_cases": [("listen", "silent", True), ("hello", "world", False), ("abc", "cab", True)],
+                    "concept": "strings",
+                    "starter_code": "def is_anagram(s1, s2):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "s1 = 'listen', s2 = 'silent'", "output": "True"},
+                        {"input": "s1 = 'hello', s2 = 'world'", "output": "False"}
+                    ],
+                    "hints": [
+                        "Sort both strings and compare",
+                        "Or count character frequencies",
+                        "Use Counter from collections"
+                    ],
+                    "solution": "def is_anagram(s1, s2):\n    return sorted(s1) == sorted(s2)"
                 }
             ],
             "loops": [
                 {
                     "id": "fizzbuzz",
                     "title": "FizzBuzz",
-                    "description": "Print numbers 1 to n. For multiples of 3 print 'Fizz', for multiples of 5 print 'Buzz', for multiples of both print 'FizzBuzz'.",
+                    "description": "Classic interview question! For numbers 1 to n: print 'Fizz' for multiples of 3, 'Buzz' for multiples of 5, and 'FizzBuzz' for multiples of both.",
                     "difficulty": "beginner",
                     "points": 10,
-                    "test_cases": [(15, [1,2,"Fizz",4,"Buzz","Fizz",7,8,"Fizz","Buzz",11,"Fizz",13,14,"FizzBuzz"])],
+                    "test_cases": [
+                        (15, [1,2,"Fizz",4,"Buzz","Fizz",7,8,"Fizz","Buzz",11,"Fizz",13,14,"FizzBuzz"]),
+                        (5, [1, 2, "Fizz", 4, "Buzz"]),
+                        (20, [1,2,"Fizz",4,"Buzz","Fizz",7,8,"Fizz","Buzz",11,"Fizz",13,14,"FizzBuzz",16,17,"Fizz",19,"Buzz"])
+                    ],
                     "concept": "loops",
-                    "starter_code": "def fizzbuzz(n):\n    result = []\n    for i in range(1, n + 1):\n        # Your code here\n        pass\n    return result\n\n# Test your code\n# print(fizzbuzz(15))",
+                    "starter_code": "def fizzbuzz(n):\n    \"\"\"\n    Create a FizzBuzz sequence from 1 to n.\n    - Multiples of 3: 'Fizz'\n    - Multiples of 5: 'Buzz'\n    - Multiples of 15: 'FizzBuzz'\n    - Others: the number itself\n    \"\"\"\n    result = []\n    for i in range(1, n + 1):\n        # Your code here\n        pass\n    return result",
                     "examples": [
                         {"input": "n = 5", "output": "[1, 2, 'Fizz', 4, 'Buzz']"},
-                        {"input": "n = 15", "output": "[1, 2, 'Fizz', 4, 'Buzz', 'Fizz', 7, 8, 'Fizz', 'Buzz', 11, 'Fizz', 13, 14, 'FizzBuzz']"}
+                        {"input": "n = 15", "output": "[1, 2, 'Fizz', 4, 'Buzz', 'Fizz', 7, 8, 'Fizz', 'Buzz', 11, 'Fizz', 13, 14, 'FizzBuzz']"},
+                        {"input": "n = 3", "output": "[1, 2, 'Fizz']"}
                     ],
                     "hints": [
-                        "Use modulo operator (%) to check divisibility",
-                        "Check for multiples of 15 first (both 3 and 5)",
-                        "Then check for multiples of 3 and 5 separately"
+                        "Use the modulo operator (%) to check divisibility",
+                        "Check multiples of 15 FIRST (both 3 and 5)",
+                        "Order matters: use if/elif/elif/else structure",
+                        "Append to result list for each iteration"
                     ],
                     "solution": "def fizzbuzz(n):\n    result = []\n    for i in range(1, n + 1):\n        if i % 15 == 0:\n            result.append('FizzBuzz')\n        elif i % 3 == 0:\n            result.append('Fizz')\n        elif i % 5 == 0:\n            result.append('Buzz')\n        else:\n            result.append(i)\n    return result"
                 },
@@ -562,6 +751,66 @@ class PersonalizedChallengeGenerator:
                         "Handle n=0 and n=1 cases separately"
                     ],
                     "solution": "def fibonacci(n):\n    if n <= 0:\n        return []\n    if n == 1:\n        return [0]\n    result = [0, 1]\n    for i in range(2, n):\n        result.append(result[-1] + result[-2])\n    return result"
+                },
+                {
+                    "id": "sum_of_range",
+                    "title": "Sum of Range",
+                    "description": "Calculate the sum of all numbers in a range from start to end (inclusive).",
+                    "difficulty": "beginner",
+                    "points": 10,
+                    "test_cases": [(1, 5, 15), (1, 1, 1), (1, 10, 55)],
+                    "concept": "loops",
+                    "starter_code": "def sum_range(start, end):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "start = 1, end = 5", "output": "15"},
+                        {"input": "start = 1, end = 10", "output": "55"}
+                    ],
+                    "hints": [
+                        "Use a loop to iterate from start to end",
+                        "Add each number to a running total",
+                        "Or use sum() with range()"
+                    ],
+                    "solution": "def sum_range(start, end):\n    return sum(range(start, end + 1))"
+                },
+                {
+                    "id": "multiplication_table",
+                    "title": "Multiplication Table",
+                    "description": "Generate multiplication table for a given number.",
+                    "difficulty": "beginner",
+                    "points": 15,
+                    "test_cases": [(3, [3, 6, 9, 12, 15, 18, 21, 24, 27, 30]), (5, [5, 10, 15, 20, 25, 30, 35, 40, 45, 50])],
+                    "concept": "loops",
+                    "starter_code": "def multiplication_table(n):\n    # Generate multiplication table from 1 to 10\n    result = []\n    for i in range(1, 11):\n        # Your code here\n        pass\n    return result",
+                    "examples": [
+                        {"input": "n = 3", "output": "[3, 6, 9, 12, 15, 18, 21, 24, 27, 30]"},
+                        {"input": "n = 5", "output": "[5, 10, 15, 20, 25, 30, 35, 40, 45, 50]"}
+                    ],
+                    "hints": [
+                        "Loop from 1 to 10",
+                        "Multiply n by each number",
+                        "Append to result list"
+                    ],
+                    "solution": "def multiplication_table(n):\n    result = []\n    for i in range(1, 11):\n        result.append(n * i)\n    return result"
+                },
+                {
+                    "id": "count_digits",
+                    "title": "Count Digits",
+                    "description": "Count the number of digits in a given number.",
+                    "difficulty": "beginner",
+                    "points": 10,
+                    "test_cases": [(12345, 5), (0, 1), (999, 3)],
+                    "concept": "loops",
+                    "starter_code": "def count_digits(n):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "12345", "output": "5"},
+                        {"input": "999", "output": "3"}
+                    ],
+                    "hints": [
+                        "Convert to string and get length",
+                        "Or use a loop and divide by 10",
+                        "Handle negative numbers"
+                    ],
+                    "solution": "def count_digits(n):\n    return len(str(abs(n)))"
                 }
             ],
             "functions": [
@@ -604,6 +853,46 @@ class PersonalizedChallengeGenerator:
                         "Handle negative numbers appropriately"
                     ],
                     "solution": "def factorial(n):\n    if n < 0:\n        return None\n    if n <= 1:\n        return 1\n    return n * factorial(n-1)"
+                },
+                {
+                    "id": "power_function",
+                    "title": "Power Function",
+                    "description": "Calculate x raised to the power of n.",
+                    "difficulty": "beginner",
+                    "points": 10,
+                    "test_cases": [(2, 10, 1024), (2, 0, 1), (2, -1, 0.5)],
+                    "concept": "functions",
+                    "starter_code": "def power(x, n):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "x = 2, n = 10", "output": "1024"},
+                        {"input": "x = 2, n = 0", "output": "1"}
+                    ],
+                    "hints": [
+                        "Use the ** operator for exponentiation",
+                        "Or implement your own using loops",
+                        "Handle negative exponents"
+                    ],
+                    "solution": "def power(x, n):\n    return x ** n"
+                },
+                {
+                    "id": "gcd_function",
+                    "title": "Greatest Common Divisor",
+                    "description": "Find the GCD of two numbers using Euclidean algorithm.",
+                    "difficulty": "intermediate",
+                    "points": 20,
+                    "test_cases": [(48, 18, 6), (100, 50, 50), (17, 13, 1)],
+                    "concept": "functions",
+                    "starter_code": "def gcd(a, b):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "a = 48, b = 18", "output": "6"},
+                        {"input": "a = 100, b = 50", "output": "50"}
+                    ],
+                    "hints": [
+                        "Use Euclidean algorithm: gcd(a,b) = gcd(b, a%b)",
+                        "Base case: when b == 0, return a",
+                        "Python has math.gcd() but implement from scratch"
+                    ],
+                    "solution": "def gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a"
                 }
             ],
             "dynamic_programming": [
@@ -646,6 +935,26 @@ class PersonalizedChallengeGenerator:
                         "For each coin, update dp values"
                     ],
                     "solution": "def coin_change(coins, amount):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1"
+                },
+                {
+                    "id": "min_cost_climbing",
+                    "title": "Min Cost Climbing Stairs",
+                    "description": "You are given an integer array cost where cost[i] is the cost of ith step. Once you pay the cost, you can climb one or two steps. Find the minimum cost to reach the last or second-to-last step.",
+                    "difficulty": "intermediate",
+                    "points": 25,
+                    "test_cases": [([10, 15, 20], 15), ([1, 100, 1, 1, 1, 100, 1, 1, 100, 1], 6)],
+                    "concept": "dynamic_programming",
+                    "starter_code": "def min_cost_climbing_stairs(cost):\n    # Your code here\n    pass",
+                    "examples": [
+                        {"input": "cost = [10, 15, 20]", "output": "15 (start at 15 and go to 20)"},
+                        {"input": "cost = [1, 100, 1, 1, 1]", "output": "3 (1->1->1)"}
+                    ],
+                    "hints": [
+                        "Use DP where dp[i] represents min cost to reach step i",
+                        "For each step, you can arrive from i-1 or i-2",
+                        "Take minimum of both paths"
+                    ],
+                    "solution": "def min_cost_climbing_stairs(cost):\n    if len(cost) <= 2:\n        return min(cost)\n    dp = [0] * len(cost)\n    dp[0] = cost[0]\n    dp[1] = cost[1]\n    for i in range(2, len(cost)):\n        dp[i] = cost[i] + min(dp[i-1], dp[i-2])\n    return min(dp[-1], dp[-2])"
                 }
             ]
         }
@@ -1044,12 +1353,171 @@ class LearningPathRecommender:
         return goals
 
 
+class CodeExecutor:
+    """Safely executes code for practice and testing"""
+    
+    MAX_EXECUTION_TIME = 5  # seconds
+    MAX_OUTPUT_SIZE = 10000  # characters
+    
+    @staticmethod
+    def execute_python(code: str, timeout: int = MAX_EXECUTION_TIME) -> Dict[str, Any]:
+        """Execute Python code safely"""
+        try:
+            # Create temporary file for code
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+                f.write(code)
+                temp_file = f.name
+            
+            try:
+                # Execute code with timeout
+                result = subprocess.run(
+                    ['python', temp_file],
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout
+                )
+                
+                output = result.stdout
+                error = result.stderr
+                
+                # Limit output size
+                if len(output) > CodeExecutor.MAX_OUTPUT_SIZE:
+                    output = output[:CodeExecutor.MAX_OUTPUT_SIZE] + "\n... (output truncated)"
+                if len(error) > CodeExecutor.MAX_OUTPUT_SIZE:
+                    error = error[:CodeExecutor.MAX_OUTPUT_SIZE] + "\n... (error truncated)"
+                
+                return {
+                    'success': result.returncode == 0,
+                    'output': output,
+                    'error': error,
+                    'returncode': result.returncode
+                }
+            finally:
+                # Clean up temp file
+                if os.path.exists(temp_file):
+                    os.remove(temp_file)
+        
+        except subprocess.TimeoutExpired:
+            return {
+                'success': False,
+                'output': '',
+                'error': f'Code execution timeout (> {timeout} seconds)',
+                'returncode': -1
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'output': '',
+                'error': f'Execution error: {str(e)}',
+                'returncode': -1
+            }
+    
+    @staticmethod
+    def test_code(code: str, test_cases: List[tuple], func_name: str = None) -> Dict[str, Any]:
+        """Test code with provided test cases"""
+        try:
+            # Create namespace for code execution
+            namespace = {}
+            
+            # Execute user code
+            exec(code, namespace)
+            
+            # Get the function
+            if func_name and func_name in namespace:
+                func = namespace[func_name]
+            elif func_name:
+                return {
+                    'success': False,
+                    'passed': 0,
+                    'total': len(test_cases),
+                    'results': [{'input': '', 'expected': '', 'actual': '', 'passed': False, 
+                               'error': f'Function {func_name} not found'}],
+                    'error': f'Function {func_name} not found in code'
+                }
+            else:
+                # Try to find a function with common names
+                funcs = {k: v for k, v in namespace.items() if callable(v) and not k.startswith('_')}
+                if not funcs:
+                    return {
+                        'success': False,
+                        'passed': 0,
+                        'total': len(test_cases),
+                        'results': [],
+                        'error': 'No functions found in code'
+                    }
+                func = list(funcs.values())[0]
+            
+            # Run test cases
+            results = []
+            passed = 0
+            
+            for test_case in test_cases:
+                if isinstance(test_case, (list, tuple)):
+                    if len(test_case) == 2:
+                        inputs, expected = test_case
+                        actual_inputs = inputs if isinstance(inputs, (list, tuple)) else [inputs]
+                    else:
+                        actual_inputs = test_case[:-1]
+                        expected = test_case[-1]
+                else:
+                    actual_inputs = [test_case]
+                    expected = None
+                
+                try:
+                    actual = func(*actual_inputs) if isinstance(actual_inputs, (list, tuple)) else func(actual_inputs)
+                    test_passed = actual == expected
+                    if test_passed:
+                        passed += 1
+                    
+                    results.append({
+                        'input': str(actual_inputs),
+                        'expected': str(expected),
+                        'actual': str(actual),
+                        'passed': test_passed,
+                        'error': None
+                    })
+                except Exception as e:
+                    results.append({
+                        'input': str(actual_inputs),
+                        'expected': str(expected),
+                        'actual': '',
+                        'passed': False,
+                        'error': str(e)
+                    })
+            
+            return {
+                'success': True,
+                'passed': passed,
+                'total': len(test_cases),
+                'results': results,
+                'error': None
+            }
+        
+        except SyntaxError as e:
+            return {
+                'success': False,
+                'passed': 0,
+                'total': len(test_cases),
+                'results': [],
+                'error': f'Syntax Error: {str(e)}'
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'passed': 0,
+                'total': len(test_cases),
+                'results': [],
+                'error': f'Error: {str(e)}'
+            }
+
+
 # Initialize components
 user_manager = UserManager()
 memory = HindsightCloudMemory(HINDSIGHT_API_KEY)
 challenge_generator = PersonalizedChallengeGenerator(memory)
 debugging_assistant = DebuggingAssistant(memory)
 learning_recommender = LearningPathRecommender(memory)
+code_executor = CodeExecutor()
 
 # Store active sessions
 active_sessions = {}
@@ -1187,6 +1655,50 @@ def get_challenge(student_id):
             return jsonify({'error': 'Student not found'}), 404
     
     challenge = challenge_generator.generate_challenge(profile)
+    challenge['student_id'] = student_id
+    
+    # Start session
+    session_id = str(uuid.uuid4())
+    active_sessions[session_id] = {
+        'student_id': student_id,
+        'challenge': challenge,
+        'start_time': datetime.now().isoformat(),
+        'submissions': [],
+        'mistakes': []
+    }
+    
+    challenge['session_id'] = session_id
+    
+    return jsonify(challenge)
+
+
+@app.route('/api/new-challenge/<student_id>', methods=['GET'])
+@login_required
+def get_new_challenge(student_id):
+    """Get a new random challenge for the student"""
+    if student_id != session['student_id']:
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    profile = memory.get_student_profile(student_id)
+    
+    if not profile:
+        user = user_manager.get_user_by_student_id(student_id)
+        if user:
+            profile = {
+                'student_id': student_id,
+                'preferred_languages': user.get('preferred_languages', ['python']),
+                'skill_level': user.get('skill_level', {'python': 'beginner'}),
+                'common_mistakes': user.get('common_mistakes', {}),
+                'completed_challenges': user.get('completed_challenges', []),
+                'mastery_levels': user.get('mastery_levels', {}),
+                'weakest_concepts': user.get('weakest_concepts', []),
+                'strongest_concepts': user.get('strongest_concepts', [])
+            }
+        else:
+            return jsonify({'error': 'Student not found'}), 404
+    
+    # Get a new challenge
+    challenge = challenge_generator.get_random_challenge(profile)
     challenge['student_id'] = student_id
     
     # Start session
@@ -1491,6 +2003,134 @@ def get_stats(student_id):
         'learning_speed': profile.get('learning_speed', 0),
         'streak_days': user.get('streak_days', 0),
         'total_points': user.get('total_points', 0)
+    })
+
+
+@app.route('/api/execute-code', methods=['POST'])
+@login_required
+def execute_code():
+    """Execute Python code in practice terminal"""
+    data = request.json
+    code = data.get('code', '')
+    language = data.get('language', 'python')
+    
+    if not code:
+        return jsonify({'error': 'No code provided'}), 400
+    
+    if language != 'python':
+        return jsonify({'error': 'Only Python is supported currently'}), 400
+    
+    result = code_executor.execute_python(code)
+    
+    return jsonify({
+        'success': result['success'],
+        'output': result['output'],
+        'error': result['error'],
+        'returncode': result['returncode']
+    })
+
+
+@app.route('/api/test-code', methods=['POST'])
+@login_required
+def test_code():
+    """Test code with test cases"""
+    data = request.json
+    code = data.get('code', '')
+    test_cases = data.get('test_cases', [])
+    func_name = data.get('func_name', None)
+    challenge_id = data.get('challenge_id', None)
+    student_id = session['student_id']
+    
+    if not code:
+        return jsonify({'error': 'No code provided'}), 400
+    
+    if not test_cases:
+        return jsonify({'error': 'No test cases provided'}), 400
+    
+    # Convert test_cases to tuples if needed
+    test_cases = [tuple(tc) if isinstance(tc, list) else tc for tc in test_cases]
+    
+    result = code_executor.test_code(code, test_cases, func_name)
+    
+    # Determine if all tests passed
+    all_passed = result.get('passed') == result.get('total') and result['success']
+    
+    # If challenge_id provided and all tests passed, update profile
+    if challenge_id and all_passed:
+        profile = memory.get_student_profile(student_id)
+        if not profile:
+            profile = {}
+        
+        if challenge_id not in profile.get('completed_challenges', []):
+            profile['completed_challenges'] = profile.get('completed_challenges', []) + [challenge_id]
+            memory.update_student_profile(profile)
+        
+        # Add points
+        challenge = challenge_generator.get_challenge_by_id(challenge_id)
+        if challenge:
+            points = challenge.get('points', 10)
+            user_manager.add_points(student_id, points)
+    
+    return jsonify({
+        'success': result['success'],
+        'passed': result.get('passed', 0),
+        'total': result.get('total', 0),
+        'results': result.get('results', []),
+        'error': result.get('error', None),
+        'all_passed': all_passed
+    })
+
+
+@app.route('/api/free-code-execute', methods=['POST'])
+@login_required
+def free_code_execute():
+    """Execute code in free practice mode"""
+    data = request.json
+    code = data.get('code', '')
+    language = data.get('language', 'python')
+    
+    if not code:
+        return jsonify({'error': 'No code provided'}), 400
+    
+    if language != 'python':
+        return jsonify({'error': 'Only Python is supported currently'}), 400
+    
+    result = code_executor.execute_python(code)
+    
+    return jsonify({
+        'success': result['success'],
+        'output': result['output'],
+        'error': result['error'],
+        'returncode': result['returncode']
+    })
+
+
+@app.route('/api/free-practice/<student_id>', methods=['GET'])
+@login_required
+def get_free_practice_session(student_id):
+    """Get a free practice session"""
+    if student_id != session['student_id']:
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    # Create session ID for tracking
+    session_id = str(uuid.uuid4())
+    active_sessions[session_id] = {
+        'student_id': student_id,
+        'type': 'free_practice',
+        'start_time': datetime.now().isoformat(),
+        'code_submissions': []
+    }
+    
+    return jsonify({
+        'session_id': session_id,
+        'starter_code': "# Free Code Practice\n# Write your Python code here\n\ndef hello_world():\n    print('Hello, World!')\n\nhello_world()",
+        'instructions': 'Write and run any Python code. Use the terminal to execute and test your code. No specific requirements!',
+        'tips': [
+            'Use print() to display output',
+            'Define functions and test them',
+            'Experiment with different algorithms',
+            'Practice any concept you want'
+        ]
     })
 
 

@@ -380,6 +380,103 @@ body::before {
     font-weight: 500;
 }
 
+/* Modified stat card styling for progress display */
+.stat-value {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #888;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Progress Bar Styling */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    font-size: 0.85em;
+    color: #667eea;
+    font-weight: 600;
+}
+
+/* Mastery Indicators */
+.mastery-indicator {
+    margin-top: 10px;
+}
+
+.badge-excellent {
+    display: inline-block;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.badge-good {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.badge-improving {
+    display: inline-block;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.badge-learning {
+    display: inline-block;
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+/* Accuracy Badge */
+.accuracy-badge {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #667eea;
+    font-weight: 600;
+    padding: 8px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 6px;
+    text-align: center;
+}
+
 /* Enhanced Recommendations and Concepts Sections */
 .recommendations-section, .weak-concepts-section {
     background: rgba(255, 255, 255, 0.95);
@@ -494,12 +591,51 @@ body::before {
     animation: rotate 15s linear infinite reverse;
 }
 
-.challenge-header h2 {
+.challenge-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
     margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.challenge-header h2 {
+    margin: 0;
     font-size: 28px;
     font-weight: 700;
     position: relative;
     z-index: 1;
+    flex: 1;
+}
+
+.new-challenge-btn {
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #667eea;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.new-challenge-btn:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.new-challenge-btn:active {
+    transform: translateY(0);
 }
 
 .challenge-meta {
@@ -851,7 +987,181 @@ body::before {
 .suggestion-item:hover {
     background: rgba(255, 255, 255, 0.95);
     transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(255,152,0,0.15);
+}
+
+/* Terminal/Free Code Styles */
+.terminal-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.terminal-header {
+    padding: 25px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.terminal-header h2 {
+    color: #667eea;
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+
+.terminal-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.terminal-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+}
+
+.editor-panel,
+.output-panel {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #f0f1f7 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.panel-header h3 {
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.editor-tools {
+    display: flex;
+    gap: 8px;
+}
+
+.tool-btn {
+    padding: 8px 14px;
+    background: rgba(102, 126, 234, 0.2);
+    color: #667eea;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tool-btn:hover {
+    background: rgba(102, 126, 234, 0.3);
+    transform: scale(1.05);
+}
+
+.tool-btn.run-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.tool-btn.run-btn:hover {
+    background: linear-gradient(135deg, #7b8ff0, #8758b5);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.code-editor {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #333;
+    background: #fafbfc;
+    resize: none;
+    outline: none;
+}
+
+.code-editor::placeholder {
+    color: #aaa;
+}
+
+.terminal-output {
+    flex: 1;
+    padding: 16px;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #2d3436;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    overflow-y: auto;
+    border: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.terminal-output:empty::before {
+    content: 'Output will appear here...';
+    color: #666;
+}
+
+.quick-tips {
+    padding: 20px;
+    background: rgba(255, 193, 7, 0.08);
+    border-radius: 12px;
+    border-left: 4px solid #ffc107;
+}
+
+.quick-tips h3 {
+    color: #f57f17;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.quick-tips ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.quick-tips li {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.quick-tips li:before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #ffc107;
+    font-weight: bold;
+}
+
+/* Responsive Design for Terminal */
+@media (max-width: 1024px) {
+    .terminal-content {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
 }
 
 /* Mistakes List */

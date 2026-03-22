@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Coding Practice Mentor - Learn to Code with AI Assistance</title>
+    <title>CoderWorlds - Learn to Code with AI Assistance</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,8 +13,8 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
-                <i class="fas fa-robot"></i>
-                <span>AI Coding Mentor</span>
+                <i class="fas fa-code"></i>
+                <span>CoderWorlds</span>
             </div>
             
             <div class="student-info" id="studentInfo">
@@ -34,7 +34,11 @@
                 </a>
                 <a href="#" class="nav-item" data-tab="challenge">
                     <i class="fas fa-code"></i>
-                    <span>Practice</span>
+                    <span>Challenges</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="terminal">
+                    <i class="fas fa-terminal"></i>
+                    <span>Free Code</span>
                 </a>
                 <a href="#" class="nav-item" data-tab="learning-path">
                     <i class="fas fa-road"></i>
@@ -42,11 +46,11 @@
                 </a>
                 <a href="#" class="nav-item" data-tab="mistakes">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <span>Mistakes History</span>
+                    <span>Mistakes</span>
                 </a>
                 <a href="#" class="nav-item" data-tab="stats">
                     <i class="fas fa-chart-bar"></i>
-                    <span>Statistics</span>
+                    <span>Stats</span>
                 </a>
             </nav>
             
@@ -68,29 +72,29 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <i class="fas fa-trophy"></i>
-                        <div class="stat-info">
-                            <h3 id="challengesCompleted">0</h3>
+                        <div class="stat-info" id="challengesCompleted">
+                            <h3>0</h3>
                             <p>Challenges Completed</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-chart-line"></i>
-                        <div class="stat-info">
-                            <h3 id="masteryLevel">0%</h3>
+                        <div class="stat-info" id="masteryLevel">
+                            <h3>0%</h3>
                             <p>Overall Mastery</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-clock"></i>
-                        <div class="stat-info">
-                            <h3 id="learningSpeed">0s</h3>
+                        <div class="stat-info" id="learningSpeed">
+                            <h3>0s</h3>
                             <p>Avg. Solution Time</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-exclamation-circle"></i>
-                        <div class="stat-info">
-                            <h3 id="mistakesCount">0</h3>
+                        <div class="stat-info" id="mistakesCount">
+                            <h3>0</h3>
                             <p>Mistakes Made</p>
                         </div>
                     </div>
@@ -115,7 +119,12 @@
             <div class="tab-content" id="challenge-tab">
                 <div class="challenge-container">
                     <div class="challenge-header">
-                        <h2 id="challengeTitle">Loading challenge...</h2>
+                        <div class="challenge-header-top">
+                            <h2 id="challengeTitle">Loading challenge...</h2>
+                            <button id="newChallengeBtn" class="new-challenge-btn" title="Load a different challenge">
+                                <i class="fas fa-random"></i> New Challenge
+                            </button>
+                        </div>
                         <div class="challenge-meta">
                             <span class="difficulty-badge" id="challengeDifficulty">Beginner</span>
                             <span class="concept-badge" id="challengeConcept">Arrays</span>
@@ -167,6 +176,54 @@
                                 <div id="suggestionsList"></div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Free Code Practice Terminal Tab -->
+            <div class="tab-content" id="terminal-tab">
+                <div class="terminal-container">
+                    <div class="terminal-header">
+                        <h2><i class="fas fa-terminal"></i> Free Code Practice</h2>
+                        <p>Write and execute any Python code freely! No restrictions, no scoring.</p>
+                    </div>
+                    
+                    <div class="terminal-content">
+                        <div class="editor-panel">
+                            <div class="panel-header">
+                                <h3>Code Editor</h3>
+                                <div class="editor-tools">
+                                    <button id="clearCodeBtn" class="tool-btn" title="Clear Code">
+                                        <i class="fas fa-trash"></i> Clear
+                                    </button>
+                                    <button id="runTerminalCodeBtn" class="tool-btn run-btn" title="Execute Code">
+                                        <i class="fas fa-play"></i> Run Code
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea id="terminalCodeEditor" class="code-editor" placeholder="# Write your Python code here&#10;# Examples:&#10;# print('Hello, World!')&#10;# for i in range(10):&#10;#     print(i)&#10;&#10;print('Start coding...')"></textarea>
+                        </div>
+                        
+                        <div class="output-panel">
+                            <div class="panel-header">
+                                <h3>Output Terminal</h3>
+                                <button id="clearOutputBtn" class="tool-btn">
+                                    <i class="fas fa-eraser"></i> Clear
+                                </button>
+                            </div>
+                            <pre id="terminalOutput" class="terminal-output"></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-tips">
+                        <h3><i class="fas fa-lightbulb"></i> Quick Tips</h3>
+                        <ul>
+                            <li>Use <code>print()</code> to display output</li>
+                            <li>Define functions and call them to test behavior</li>
+                            <li>Import standard libraries like math, random, etc.</li>
+                            <li>Practice algorithms and solve coding problems</li>
+                            <li>Experiment with different Python features</li>
+                        </ul>
                     </div>
                 </div>
             </div>

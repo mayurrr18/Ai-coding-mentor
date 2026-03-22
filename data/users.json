@@ -39,8 +39,52 @@
     "mastery_levels": {},
     "weakest_concepts": [],
     "strongest_concepts": [],
+    "streak_days": 2,
+    "last_practice": "2026-03-21T12:47:36.034202",
+    "total_points": 0
+  },
+  "testuser3": {
+    "username": "testuser3",
+    "email": "test3@example.com",
+    "password_hash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "name": "Test User 3",
+    "student_id": "72d8f89f",
+    "created_at": "2026-03-21T11:55:44.053039",
+    "preferred_languages": [
+      "python"
+    ],
+    "skill_level": {
+      "python": "beginner"
+    },
+    "common_mistakes": {},
+    "completed_challenges": [],
+    "mastery_levels": {},
+    "weakest_concepts": [],
+    "strongest_concepts": [],
+    "streak_days": 0,
+    "last_practice": null,
+    "total_points": 0
+  },
+  "testuser4": {
+    "username": "testuser4",
+    "email": "test4@example.com",
+    "password_hash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "name": "Test User 4",
+    "student_id": "5f6d3134",
+    "created_at": "2026-03-21T12:00:49.655303",
+    "preferred_languages": [
+      "python"
+    ],
+    "skill_level": {
+      "python": "beginner"
+    },
+    "common_mistakes": {},
+    "completed_challenges": [],
+    "mastery_levels": {},
+    "weakest_concepts": [],
+    "strongest_concepts": [],
     "streak_days": 1,
-    "last_practice": "2026-03-20T21:27:59.056671",
+    "last_practice": "2026-03-21T12:26:00.882903",
     "total_points": 0
   }
 }
